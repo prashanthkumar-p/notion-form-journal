@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prashanth Journal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #0073e6;
+    }
+    form {
+      max-width: 600px;
+      margin: auto;
+      background-color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    select,
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #0073e6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    .conditional {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prashanth Journal</h1>
+  <form id="journalForm">
+    <label for="entryDate">Date</label>
+    <input type="date" id="entryDate" name="entryDate" required />
+
+    <label for="entryType">What is this?</label>
+    <select id="entryType" name="entryType" required>
+      <option value="">Blank</option>
+      <option value="Idea">Idea</option>
+      <option value="Reflection">Reflection</option>
+      <option value="Gratitude">Gratitude</option>
+      <option value="Forte">Forte</option>
+    </select>
+
+    <div id="ideaBox" class="conditional">
+      <label for="ideaText">List your idea</label>
+      <textarea id="ideaText" name="ideaText" rows="4"></textarea>
+    </div>
+
+    <div id="reflectionBox" class="conditional">
+      <label for="reflectionText">List your reflection</label>
+      <textarea id="reflectionText" name="reflectionText" rows="4"></textarea>
+    </div>
+
+    <div id="gratitudeBox" class="conditional">
+      <label for="gratitudeText">List your gratitude</label>
+      <textarea id="gratitudeText" name="gratitudeText" rows="4"></textarea>
+    </div>
+
+    <div id="forteBox" class="conditional">
+      <label for="who">Who?</label>
+      <input type="text" id="who" name="who" />
+
+      <label for="when">When?</label>
+      <input type="text" id="when" name="when" />
+
+      <label for="where">Where?</label>
+      <input type="text" id="where" name="where" />
+
+      <label for="what">What?</label>
+      <select id="what" name="what">
+        <option value="">Blank</option>
+        <option value="Super Power">Super Power</option>
+        <option value="Growth Opportunity">Growth Opportunity</option>
+      </select>
+
+      <div id="superPowerBox" class="conditional">
+        <label for="superPowerNote">Super Power Notes</label>
+        <textarea id="superPowerNote" name="superPowerNote" rows="3"></textarea>
+      </div>
+
+      <div id="growthBox" class="conditional">
+        <label for="growthNote">Growth Opportunity Notes</label>
+        <textarea id="growthNote" name="growthNote" rows="3"></textarea>
+      </div>
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const entryType = document.getElementById("entryType");
+    const ideaBox = document.getElementById("ideaBox");
+    const reflectionBox = document.getElementById("reflectionBox");
+    const gratitudeBox = document.getElementById("gratitudeBox");
+    const forteBox = document.getElementById("forteBox");
+
+    const whatSelect = document.getElementById("what");
+    const superPowerBox = document.getElementById("superPowerBox");
+    const growthBox = document.getElementById("growthBox");
+
+    entryType.addEventListener("change", () => {
+      ideaBox.style.display = "none";
+      reflectionBox.style.display = "none";
+      gratitudeBox.style.display = "none";
+      forteBox.style.display = "none";
+      superPowerBox.style.display = "none";
+      growthBox.style.display = "none";
+
+      if (entryType.value === "Idea") ideaBox.style.display = "block";
+      if (entryType.value === "Reflection") reflectionBox.style.display = "block";
+      if (entryType.value === "Gratitude") gratitudeBox.style.display = "block";
+      if (entryType.value === "Forte") forteBox.style.display = "block";
+    });
+
+    whatSelect.addEventListener("change", () => {
+      superPowerBox.style.display = whatSelect.value === "Super Power" ? "block" : "none";
+      growthBox.style.display = whatSelect.value === "Growth Opportunity" ? "block" : "none";
+    });
+
+    document.getElementById("journalForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const data = {
+        date: document.getElementById("entryDate").value,
+        type: document.getElementById("entryType").value,
+        idea: document.getElementById("ideaText").value,
+        reflection: document.getElementById("reflectionText").value,
+        gratitude: document.getElementById("gratitudeText").value,
+        who: document.getElementById("who").value,
+        when: document.getElementById("when").value,
+        where: document.getElementById("where").value,
+        what: document.getElementById("what").value,
+        superPowerNote: document.getElementById("superPowerNote").value,
+        growthNote: document.getElementById("growthNote").value
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbxt_SeHYOuVaNXnph-LQlS3c_2yc968XU-79yzAKGWuMsWA5IsoZUBGwfGT8R3HrC2x/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (response.ok) {
+            alert("Journal submitted successfully!");
+            document.getElementById("journalForm").reset();
+            ideaBox.style.display = "none";
+            reflectionBox.style.display = "none";
+            gratitudeBox.style.display = "none";
+            forteBox.style.display = "none";
+            superPowerBox.style.display = "none";
+            growthBox.style.display = "none";
+          } else {
+            alert("Error: Could not submit. Please try again.");
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("Error: Something went wrong.");
+        });
+    });
+  </script>
+</body>
+</html>
